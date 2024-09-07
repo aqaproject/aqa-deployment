@@ -31,7 +31,7 @@ services:
       - aqa
   
   webserver:
-    image: nginx:lastest
+    image: nginx:latest
     container_name: webserver
     restart: always
     depends_on:
@@ -41,7 +41,7 @@ services:
       - 443:443
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     volumes:
-      - ./webserver/nginx/app.conf:/etc/nginx/conf.d/app.conf:ro
+      - ./webserver/nginx/conf/:/etc/nginx/conf.d/:ro
       - ./webserver/certbot/www:/var/www/certbot:ro
     networks:
       - aqa
