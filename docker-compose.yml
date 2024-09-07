@@ -31,9 +31,9 @@ services:
       - aqa
   
   webserver:
-    image: nginx:1.27.0-alpine
+    image: nginx:lastest
     container_name: webserver
-    restart: unless-stopped
+    restart: always
     depends_on:
       - backend
     ports:
@@ -42,18 +42,17 @@ services:
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     volumes:
       - ./webserver/nginx/app.conf:/etc/nginx/conf.d/app.conf:ro
-      - ./webserver/certbot/conf:/etc/letsencrypt
-      - ./webserver/certbot/www:/var/www/certbot
+      - ./webserver/certbot/www:/var/www/certbot:ro
     networks:
       - aqa
 
-  ssl:
+  certbot:
     image: certbot/certbot:v2.10.0
-    container_name: ssl
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    container_name: certbot
+    # entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
-      - ./webserver/certbot/conf:/etc/letsencrypt
-      - ./webserver/certbot/www:/var/www/certbot
+      - ./webserver/certbot/conf:/etc/letsencrypt:rw
+      - ./webserver/certbot/www:/var/www/certbot:rw
     networks:
       - aqa
 
