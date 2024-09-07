@@ -33,7 +33,7 @@ deploy() {
   # (nginx continues routing to the old container only)
   echo "Create new container"
  
-  docker compose up -d --no-deps --scale $service_name=1 --no-recreate $service_name 
+  # docker compose up -d --no-deps --scale $service_name=1 --no-recreate $service_name 
  
   echo -e "\nStart routing requests to the new container (as well as the old)"
   reload_nginx
