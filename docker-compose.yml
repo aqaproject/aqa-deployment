@@ -39,9 +39,10 @@ services:
     ports:
       - 80:80
       - 443:443
-    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    # command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     volumes:
-      - ./webserver/nginx/app.conf/:/etc/nginx/conf.d/:ro
+      - ./webserver/nginx/app.conf:/etc/nginx/sites-available/bthzang.id.vn:ro
+      - /etc/letsencrypt/live/bthzang.id.vn/:/etc/letsencrypt/live/bthzang.id.vn/:ro 
       # - ./webserver/certbot/www:/var/www/certbot:ro
     networks:
       - aqa
