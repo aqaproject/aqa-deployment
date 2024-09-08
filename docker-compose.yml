@@ -41,8 +41,8 @@ services:
       - 443:443
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     volumes:
-      - ./webserver/nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./webserver/certbot/www:/var/www/certbot:ro
+      - ./webserver/nginx/app.conf/:/etc/nginx/conf.d/:ro
+      # - ./webserver/certbot/www:/var/www/certbot:ro
     networks:
       - aqa
 
@@ -50,9 +50,9 @@ services:
     image: certbot/certbot:v2.10.0
     container_name: certbot
     # entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    volumes:
-      - ./webserver/certbot/conf:/etc/letsencrypt:rw
-      - ./webserver/certbot/www:/var/www/certbot:rw
+    # volumes:
+      # - ./webserver/certbot/conf:/etc/letsencrypt:rw
+      # - ./webserver/certbot/www:/var/www/certbot:rw
     networks:
       - aqa
 
