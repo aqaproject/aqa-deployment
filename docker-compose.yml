@@ -29,31 +29,31 @@ services:
       - postgres
     networks:
       - aqa
-  
+
   webserver:
-    image: nginx:latest
+    image: nginx:1.27.0-alpine
     container_name: webserver
-    restart: always
+    restart: unless-stopped
     depends_on:
       - backend
     ports:
       - 80:80
       - 443:443
-    # command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     volumes:
-      - ./webserver/nginx/app.conf:/etc/nginx/sites-available/bthzang.id.vn:ro
-      - /etc/letsencrypt/live/bthzang.id.vn/:/etc/letsencrypt/live/bthzang.id.vn/:ro 
-      # - ./webserver/certbot/www:/var/www/certbot:ro
+      - ./webserver/nginx/app.conf:/etc/nginx/conf.d/app.conf:ro
+      - ./webserver/certbot/conf:/etc/letsencrypt
+      - ./webserver/certbot/www:/var/www/certbot
     networks:
       - aqa
 
-  certbot:
+  ssl:
     image: certbot/certbot:v2.10.0
-    container_name: certbot
-    # entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    # volumes:
-      # - ./webserver/certbot/conf:/etc/letsencrypt:rw
-      # - ./webserver/certbot/www:/var/www/certbot:rw
+    container_name: ssl
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./webserver/certbot/conf:/etc/letsencrypt
+      - ./webserver/certbot/www:/var/www/certbot
     networks:
       - aqa
 
